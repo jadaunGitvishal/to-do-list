@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <link rel="stylesheet" type="text/css" href="./index.module.css" />
+    <div>
+      <h1>To Do List</h1>
+    </div>
+    <textarea id="myTextarea" rows="4" cols="50"></textarea>
+    <br />
+
+    <button id="saveButton">Save</button>
+    <div id="displayArea"></div>
+
+    <script>
+      const textarea = document.getElementById("myTextarea");
+      const saveButton = document.getElementById("saveButton");
+      const displayArea = document.getElementById("displayArea");
+
+      const savedTextArray =
+        JSON.parse(localStorage.getItem("savedTextArray")) || [];
+
+      function saveText() {
+        const text = textarea.value;
+        savedTextArray.unshift(text);
+        localStorage.setItem("savedTextArray", JSON.stringify(savedTextArray));
+        displaySavedText();
+        textarea.value = ""; // Clear the textarea
+      }
+
+      function deleteText(index) {
+        savedTextArray.splice(index, 1);
+        localStorage.setItem("savedTextArray", JSON.stringify(savedTextArray));
+        displaySavedText();
+      }
+
+      function displaySavedText() {
+        displayArea.innerHTML = "";
+
+        savedTextArray.forEach((text, index) => {
+          const savedText = document.createElement("div");
+          savedText.className = "saved-text";
+          savedText.innerHTML = text;
+
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "delete-button";
+          deleteButton.textContent = "Delete";
+          deleteButton.addEventListener("click", () => deleteText(index));
+
+          savedText.appendChild(deleteButton);
+          displayArea.appendChild(savedText);
+        });
+      }
+
+      saveButton.addEventListener("click", saveText);
+      displaySavedText();
+    </script>
+  </body>
+</html>
